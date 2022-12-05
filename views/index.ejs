@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script>var page='home'</script>
+    <%- include("partials/head.ejs") %>
+</head>
+
+<body>
+    <%- include("partials/menu.ejs") %>
+    <div class="content">
+            <script>
+                function viewArrPls(arr, parent) {
+                    let p = document.createElement('p');
+                    let txt = '';
+                    for (let pl of arr) {
+                        txt = txt + pl.pl.toString() + " " + pl.pos.toString() + " " + pl.speed.toString() + '\n';
+                    } p.innerText = txt; parent.appendChild(p);
+                }
+                function viewDateResponse(dUTC, parent) {
+                    let p = document.createElement('p');
+                    let txt = (new Date(dUTC)).toLocaleString();
+                    p.innerText = txt; parent.appendChild(p);
+                }
+                let date = new Date();
+                let tz = (-date.getTimezoneOffset() / 60).toString();
+                let dateUTCms = date.getTime();
+                let txtDate = date.toLocaleString() + ' ' + tz + ' ' + date.toUTCString();
+                document.querySelector(".content").innerText = txtDate;
+                const url = '/';
+                const data = { dateUTCms: dateUTCms, dateTZ:tz};
+                fetch(url, {
+                    method: 'post',
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response =>
+                        response.json().then(data => ({
+                            data: data,
+                            status: response.status
+                        })
+                        ).then(res => {
+                            if (res.status == 200) {
+                                console.log(res.data);
+                                viewDateResponse(res.data.dateUTCms, document.querySelector(".content"));
+                                viewArrPls(res.data.pls, document.querySelector(".content"));
+                            }
+                        }))
+                    .catch(function () {
+                        console.log('Request failed', error);
+                    });            </script>
+        </div>
+        <%- include("partials/footer.ejs") %>
+</body>
+<html>

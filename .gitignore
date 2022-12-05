@@ -1,0 +1,10 @@
+.vscode
+dist
+build
+node_modules
+deps/release
+deps/swisseph.sln
+deps/swisseph.vcxproj
+deps/swisseph.vcxproj.filters
+src/functions.cpp
+package-lock.json
